@@ -1,0 +1,170 @@
+<template>
+<view>
+  <!-- 轮播图 -->
+  <swiper
+    indicator-dots="{{true}}"
+    autoplay="{{true}}"
+    interval="{{6*1000}}"
+    circular="{{true}}"
+    style="height:662rpx;">
+      <repeat for="{{bannerList}}" key="index" index="index" item="item">
+        <swiper-item>
+          <image src="{{item}}" mode="aspectFill" />
+        </swiper-item>
+      </repeat>
+  </swiper>
+  <!-- 商品名称 -->
+  <view class="good">
+    <text class="name">{{name}}</text>
+    <text class="price">￥{{price}}</text>
+  </view>
+  <!-- 服务 -->
+  <view class="service">
+    <view class="instro">
+      <text class="title">配送说明</text>
+      <text class="content">大陆地区免运费,预计3个工作日送达，其它地方
+请咨询客服。</text>
+    </view>
+    <view class="promised">
+      <text class="title">服务承诺</text>
+      <view class="promise-list">
+        <view class="promise-item">
+          <image src='/static/images/btn_refund@3x.png' mode='aspectFill'></image>
+          <text>7天退换</text>
+        </view>
+        <view class="promise-item">
+          <image src='/static/images/img_freeshipping@3x.png' mode='aspectFill'></image>
+          <text>全国包邮</text>
+        </view>
+        <view class="promise-item">
+          <image src='/static/images/btn_car@3x.png' mode='aspectFill'></image>
+          <text>顺丰直达</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 图文详情 -->
+  <view class="detail">
+    <htmlParser :parserName.sync="name1" :parserContent.sync="details"/>
+  </view>
+</view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../utils/api'
+  import MySwiper from 'common/mySwiper'
+  import htmlParser from 'components/htmlParse'
+  export default class Index extends wepy.page {
+    config= {
+      navigationBarTitleText: '淘衣'
+    }
+    data= {
+      name1: 'myHtmlParserKiner1',
+      bannerList: [],
+      details: '<text style=\'color: gray;\'> </text>',
+      name: '',
+      price: ''
+    }
+    components= {
+      MySwiper,
+      htmlParser
+    }
+    wxParseImgLoad(image){
+      let imgInfo = image.detail;
+    }
+    async getGoodDetail(id) {
+      const { data } = await api.getGoodDetail(id)
+      data.bannerList = data.bannerList.split(',')
+      this.bannerList = data.bannerList
+      this.details = data.details
+      this.name = data.name
+      this.price = data.price
+      //注意，在此处修改了content2之后，需要手动调用$apply()方法更新数据
+      this.$apply();
+      //调用通知接口通知组件更新数据
+      this.$invoke('htmlParser', 'htmlParserNotice');
+    }
+    onLoad(options) {
+      const { id } = options
+      this.id = id
+      this.getGoodDetail(id)
+      this.$apply()
+    }
+  }
+</script>
+<style lang='less'>
+page {
+  letter-spacing: 1px;
+  background-color: #f5f5f5;
+}
+.good {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color:#fff;
+  .name {
+    font-size:35rpx;
+    font-weight:bold;
+    color:rgba(53,53,53,1);
+    text-align:20rpx;
+    padding:20rpx;
+    text-align: center;
+  }
+  .price {
+    font-size:36rpx;
+    font-weight:bold;
+    color:rgba(237,118,108,1);
+    padding-bottom:20rpx;
+  }
+}
+.service{
+  display: flex;
+  flex-direction: column;
+  background-color:#fff;
+  padding: 0 20rpx;
+  margin: 30rpx 0;
+  .title {
+    font-size:30rpx;
+    color:rgba(0,0,0,1);
+    padding-right:20rpx;
+  }
+  .content {
+    font-size:24rpx;
+    color:rgba(0,0,0,1);
+  }
+}
+.instro{
+  display: flex;
+  flex-direction: row;
+  line-height:50rpx;
+  border-bottom:1px solid #eee;
+  padding-bottom:20rpx;
+}
+.promised{
+  display: flex;
+  flex-direction: row;
+  padding: 20rpx 0;
+}
+.promise-list{
+  display: flex;
+  flex-direction: row;
+}
+.promise-item{
+  display: flex;
+  flex-direction: row;
+  margin-right: 10rpx;
+  image {
+    width: 40rpx;
+    height: 40rpx;
+    background-color:#fff;
+    margin-right: 10rpx;
+  }
+  text {
+    font-size:24rpx;
+    color:rgba(124,124,124,1);
+  }
+}
+</style>
+
+

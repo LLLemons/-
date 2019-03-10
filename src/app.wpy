@@ -1,0 +1,105 @@
+<style lang="less">
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.clearfix{
+  clear: both;
+  overflow: hidden;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+import { setStore } from 'wepy-redux'
+import configStore from './store'
+
+const store = configStore()
+setStore(store)
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/car',
+			'pages/mine',
+      'pages/sort',
+      'pages/goodDetail'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    },
+    tabBar: {
+      color: '#616161',
+      selectedColor: '#6a6e94',
+      backgroundColor: '#fff',
+      list: [
+      {
+        pagePath: 'pages/index',
+        text: '首页',
+        iconPath: 'static/images/home_btn1.png',
+        selectedIconPath: 'static/images/home_btn.png'
+      },
+      {
+        pagePath: 'pages/car',
+        text: '购物车',
+        iconPath: 'static/images/shopping5.png',
+        selectedIconPath: 'static/images/shopping.png'
+      },
+      {
+        pagePath: 'pages/mine',
+        text: '我的',
+        iconPath: 'static/images/my_btn@3x.png',
+        selectedIconPath: 'static/images/mine.png'
+      }
+    ]
+    }
+  }
+
+  globalData = {
+    userInfo: null,
+    systemInfo: null
+  }
+
+  constructor () {
+    super()
+		this.use('requestfix')
+		this.use('promisify')
+  }
+
+  onLaunch() {
+    this.getSystemInfo()
+  }
+
+  getUserInfo(cb) {
+    const that = this
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo
+    }
+    wepy.getUserInfo({
+      success (res) {
+        that.globalData.userInfo = res.userInfo
+        cb && cb(res.userInfo)
+      }
+    })
+  }
+
+  async getSystemInfo() {
+    if (this.globalData.systemInfo) {
+      return this.globalData.systemInfo
+    }
+    const systemInfo = await wepy.getSystemInfo()
+    if (systemInfo.model.search('iPhone X') != -1) {
+      this.globalData.isIpx = true
+    } else {
+      this.globalData.isipx = false
+    }
+    this.globalData.systemInfo = systemInfo
+  }
+}
+</script>

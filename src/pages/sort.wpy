@@ -1,0 +1,62 @@
+<template>
+<Scroll :list.sync='goodList' :id.sync='sortID'>
+  <view class='wrapper' slot='sort'>
+    <image class='topImg' mode='aspectFill' src='{{goodList[0].imgUrl}}'></image>
+  </view>
+</Scroll>
+</template>
+<script>
+  import wepy from 'wepy'
+  import Scroll from 'common/scroll'
+  import api from '../utils/api'
+  export default class Sort extends wepy.page {
+    config = {
+      disableScroll: true
+    }
+    components = {
+      Scroll
+    }
+    data = {
+      goodList: [],
+      scrollHeight: '0',
+      sortID: ''
+    }
+    local = {
+      page: 0
+    }
+    async getGoodList(id, page) {
+      const { data } = await api.getGoodList(id, page)
+      data.forEach(item => {
+        item.bannerList=item.bannerList.split(',')
+      })
+      this.goodList = data
+      this.$apply()
+    }
+    onLoad(options) {
+      const { id } = options
+      const { page } = this.local
+      this.sortID = id
+      this.getGoodList(id, page)
+      this.getScrollViewHeight()
+      this.$apply()
+    }
+    getScrollViewHeight() {
+      const { systemInfo, isIpx } = this.$parent.globalData
+      const { windowWidth, windowHeight } = systemInfo
+      const newWindwoHeight = isIpx ? windowHeight + 83 : windowHeight + 49
+      const scrollheight = newWindwoHeight - Math.floor(windowWidth / 750 * 260)
+      this.scrollHeight = scrollheight + 'px'
+      this.$apply()
+    }
+  }
+</script>
+<style lang="less">
+.wrapper{
+  display: flex;
+  flex-direction: column;
+}
+.topImg{
+  width: 100%;
+  height: 260rpx;
+}
+</style>

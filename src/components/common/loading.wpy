@@ -1,0 +1,28 @@
+<template>
+  <view class="loading">
+    <text class="loading-text">{{ isTower ? "-已经到底了-" : "-拼命加载中-" }}</text>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class Loading extends wepy.component {
+    props = {
+      isTower: {
+        type: Boolean,
+        value: false
+      }
+    }
+  }
+</script>
+<style lang="less">
+.loading {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding-bottom:0rpx;
+  margin-bottom:20rpx;
+  height:50rpx;
+  color: #2E2F4D;
+  font-size:20rpx;
+}
+</style>

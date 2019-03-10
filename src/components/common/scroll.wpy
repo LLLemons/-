@@ -1,0 +1,131 @@
+<template>
+  <scroll-view
+    scroll-y
+    class="scrollView"
+    bindscrolltolower="lower"
+    lower-threshold="100"
+  >
+    <slot name='index'></slot>
+    <slot name='sort'></slot>
+    <view class="rowList clearfix">
+      <repeat for="{{list}}" key="item._id" item="item">
+        <view class="rowItem" @tap="tap({{item._id}})">
+          <image class="rowItem-img" src="{{item.imgUrl}}" mode="aspectFill">
+          <text class="rowItem-desc">{{item.name}}</text>
+          <text class="rowItem-price">￥{{item.price}}</text>
+        </view>
+      </repeat>
+    </view>
+    <Loading hidden="{{!isShow}}" :isTower.sync="isTower"></Loading>
+  </scroll-view>
+</template>
+<script>
+import wepy from 'wepy';
+import Loading from 'common/loading';
+import api from 'utils/api';
+export default class Scroll extends wepy.component {
+  props = {
+    height: {
+      type: String,
+      value: '300px'
+    },
+    list: {
+      type: Array,
+      observer(old, newV) {
+        console.log(old, newV)
+      }
+    },
+    id: {
+      type: String
+    }
+  };
+  data = {
+    isTower: false,
+    isShow: false
+  };
+  local = {
+    page: 1
+  };
+  components = {
+    Loading
+  };
+  methods = {
+    lower() {
+      const { page } = this.local;
+      !this.isShow && (this.isShow = true);
+      !this.isTower && this.getGoodList(this.id, page);
+    },
+    tap(id) {
+      console.log(id);
+      wepy.navigateTo({
+        url: `/pages/goodDetail?id=${id}`
+      });
+    }
+  };
+  async getGoodList(id, page) {
+    const { data } = await api.getGoodList(id, page);
+    console.log(data);
+    if (!data.length) {
+      this.isTower = true;
+      this.$apply();
+      return false;
+    }
+    data.forEach(item => {
+      item.bannerList = item.bannerList.split(',');
+    });
+    this.list = [...this.list, ...data];
+    this.local.page = this.local.page + 1;
+    this.isTower = false;
+    this.$apply();
+  }
+}
+</script>
+<style lang="less">
+.scrollView {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  .rowList {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20rpx;
+  }
+  .rowItem {
+    float: left;
+    width: 345rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 60rpx;
+    background-color: #fff;
+    border-radius: 10rpx;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.1);
+    margin-bottom: 20rpx;
+  }
+  .rowItem:nth-child(2n) {
+    float: right;
+  }
+  .rowItem-img {
+    width: 100%;
+    height: 400rpx;
+    border-top-left-radius: 10rpx;
+    border-top-right-radius: 10rpx;
+  }
+  .rowItem-desc {
+    font-size: 27rpx;
+    color: rgba(97, 97, 97, 1);
+    line-height: 40rpx;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    padding: 10rpx;
+  }
+  .rowItem-price {
+    font-size: 36rpx;
+    color: rgba(46, 47, 77, 1);
+  }
+}
+</style>

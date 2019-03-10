@@ -1,0 +1,63 @@
+<style type="less">
+  swiper-item image {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<template>
+  <swiper
+    indicator-dots="{{indicatorDots}}"
+    autoplay="{{autoplay}}"
+    interval="{{interval*1000}}"
+    duration="{{duration*1000}}"
+    circular="{{circular}}"
+    style="height:{{height}};">
+      <repeat for="{{banner}}" key="index" index="index" item="item">
+        <swiper-item @tap="navigateTo">
+          <image src="{{item.imgUrl}}" mode="aspectFill" />
+        </swiper-item>
+      </repeat>
+  </swiper>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class MySwiper extends wepy.component {
+    props = {
+      indicatorDots: { //是否显示面板指示点
+        type: Boolean,
+        value: false,
+      },
+      autoplay: { //是否自动切换
+        type: Boolean,
+        value: true
+      },
+      interval: { //自动切换时间间隔
+        type: Number,
+        value: 5
+      },
+      circular: { //是否采用衔接滑动
+        type: Boolean,
+        value: true
+      },
+      duration: { //滑动动画时长
+        type: Number,
+        value: 1
+      },
+      height: { //轮播模块高度
+        type: String,
+        value: "500rpx"
+      },
+      banner: { //图片数据
+        type: Array,
+        value: [{
+          id: 1,
+          imgUrl: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1450876139,412488559&fm=27&gp=0.jpg",
+        }, {
+          id: 2,
+          imgUrl: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1450876139,412488559&fm=27&gp=0.jpg"
+        }]
+      }
+    }
+  }
+</script>

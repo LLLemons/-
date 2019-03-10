@@ -1,0 +1,37 @@
+<template>
+  <view class='recommend'>
+    <image class="img" src='/static/images/topimg@3x.png'></image>
+    <sort :list.sync='list'></sort>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import sort from './sort'
+  export default class Recommend extends wepy.component {
+    props = {
+      list: {
+        type: Array,
+        value: []
+      }
+    }
+    components = {
+      sort
+    }
+    data = {
+    }
+    methods = {
+    }
+  }
+</script>
+<style lang="less">
+.recommend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .img {
+    width: 163rpx;
+    height: 76rpx;
+  }
+}
+</style>

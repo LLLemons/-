@@ -1,0 +1,132 @@
+<template>
+  <Scroll :list.sync="recommendList">
+    <view slot="index">
+      <!-- 轮播图 -->
+      <MySwiper height="766rpx" :banner.sync="bannerList" indicatorDots="true"></MySwiper>
+      <!-- banenr -->
+      <view class="banner-wp">
+        <view class="banner">
+          <view class="left">
+            <image class="logo" mode="aspectFill" src="/static/images/logo.png">
+          </view>
+          <view class="right">
+            <view class="banner-title">上淘衣•100%真品</view>
+          </view>
+        </view>
+      </view>
+      <!-- 分类  -->
+      <Sort :list.sync="sortList"></Sort>
+      <view class="container">
+        <image class="recImg" src='/static/images/topimg@3x.png'>
+      </view>
+    </view>
+  </Scroll>
+</template>
+<script>
+import wepy from 'wepy';
+import api from '../utils/api';
+import MySwiper from 'common/mySwiper';
+import Sort from 'index/sort';
+import Recommend from 'index/recommend';
+import Scroll from 'common/scroll';
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '淘衣',
+    disableScroll: true
+  };
+  data = {
+    bannerList: [],
+    sortList: [],
+    recommendList: []
+  };
+  local = {
+    page: 0
+  };
+  components = {
+    MySwiper,
+    Sort,
+    Recommend,
+    Scroll
+  };
+  methods = {};
+  /**
+   * 获取banner轮播
+   */
+  async getBannerList() {
+    const { data } = await api.getBannerList();
+    this.bannerList = data;
+    this.$apply();
+  }
+  /**
+   * 获取分类
+   */
+  async getSortList() {
+    const { data } = await api.getSortList();
+    this.sortList = data;
+    this.$apply();
+  }
+  /**
+   * 获取每日推荐
+   */
+  async getGoodListRec(page) {
+    const { data } = await api.getGoodListRec(page);
+    this.recommendList = data;
+    this.$apply();
+  }
+  /**
+   * 上啦加载更多
+   */
+  lower() {}
+  onLoad() {
+    const { page } = this.local;
+    this.getBannerList();
+    this.getSortList();
+    this.getGoodListRec(page);
+    this.lower();
+  }
+}
+</script>
+<style lang="less">
+page {
+  letter-spacing: 1px;
+  height: 100%;
+}
+.banner-wp {
+  width: 100%;
+  height: 100rpx;
+  position: absolute;
+  top: 716rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .banner {
+    width: 682rpx;
+    height: 100rpx;
+    border-radius: 50rpx;
+    background: rgba(248, 248, 248, 1);
+    box-shadow: 0px 0px 11px 3px rgba(189, 189, 189, 0.21) inset;
+    display: flex;
+    flex-direction: row;
+    font-size: 28rpx;
+    font-weight: bold;
+    color: rgba(46, 47, 77, 1);
+    line-height: 100rpx;
+    .left {
+      display: flex;
+      align-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 0 13rpx;
+    }
+  }
+}
+.logo {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+}
+.recImg {
+    width: 163rpx;
+    height: 76rpx;
+  }
+</style>
