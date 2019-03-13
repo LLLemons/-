@@ -1,0 +1,117 @@
+<template>
+  <view class="wrapper">
+    <view class="title green">SIGN IN</view>
+    <view class="input-wrapper">
+      <input value="{{phone}}" class="username" placeholder="IPHONE NUMBER" />
+      <input value="{{password}}" class="password" placeholder="PASSWORD"/>
+    </view>
+    <view class="submit" @tap='signIn'>SIGN IN</view>
+    <view class="footer">
+      <view class="tip">Dont have an acounnt?</view>
+      <view class="signup red" @tap='toSinUp'>SIGN UP</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import api from '../utils/api';
+export default class Login extends wepy.page {
+  config = {
+    disableScroll: true
+  };
+  data = {
+    phone: '13763865379',
+    password: '123456'
+  };
+  async signInApi(phone, password) {
+    const { data } = await api.signInApi(phone, password)
+    console.log(data)
+  }
+  methods = {
+    signIn() {
+      const { phone, password } = this.data
+      this.signInApi(phone, password)
+    },
+    toSinUp() {
+      wepy.navigateTo({
+        url: '/pages/signup'
+      })
+    }
+  };
+  onLoad() {}
+}
+</script>
+<style lang="less">
+page {
+  height: 100%;
+}
+.wrapper {
+  display:flex;
+  flex-direction:center;
+  align-items:center;
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+  padding:30rpx 40rpx;
+  letter-spacing:1px;
+  flex-direction:column;
+  overflow:hidden;
+}
+.title {
+  font-size: 60rpx;
+  margin:20rpx 0;
+}
+.input-wrapper {
+  width:100%;
+  margin-top:80rpx;
+  input {
+    width:100%;
+    height:140rpx;
+    border-radius:10rpx;
+    background-color:#f6f7f9;
+    font-size:35rpx;
+    margin-bottom:60rpx;
+    box-sizing:border-box;
+    display:flex;
+    padding-left:60rpx;
+    line-height:35rpx;
+  }
+}
+.submit {
+  width:100%;
+  height:120rpx;
+  margin-top:60rpx;
+  border-radius:10rpx;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background-color:#e78487;
+  color:#fff;
+  font-size:40rpx;
+}
+.footer {
+  position:absolute;
+  bottom:60rpx;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  .tip {
+    font-size: 30rpx;
+    color: #f6f7f9;
+  }
+  .signup {
+    font-size:35rpx;
+    margin-top:15rpx;
+  }
+}
+.green {
+  color: rgba(114, 131, 152, 1)
+}
+.red {
+  color: #e78487;
+}
+</style>
+
+

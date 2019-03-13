@@ -47,6 +47,11 @@
   <view class="detail">
     <htmlParser :parserName.sync="name1" :parserContent.sync="details"/>
   </view>
+  <!-- 加入购物车 -->
+  <view class="bottom-btn">
+    <view class="car item" @tap='addCar'>加入购物车</view>
+    <view class="buy item">立即购买</view>
+  </view>
 </view>
 </template>
 <script>
@@ -69,8 +74,19 @@
       MySwiper,
       htmlParser
     }
-    wxParseImgLoad(image){
-      let imgInfo = image.detail;
+    async addCartApi(id, size) {
+      const { data } = await api.addCartApi(id, size)
+      if (data.code && data.code === 401) {
+        wepy.navigateTo({
+          url: '/pages/loginTip'
+        })
+      }
+    }
+    /**
+     * 加入购物车
+     */
+    addCar() {
+      this.addCartApi('1', 'S')
     }
     async getGoodDetail(id) {
       const { data } = await api.getGoodDetail(id)
@@ -163,6 +179,27 @@ page {
   text {
     font-size:24rpx;
     color:rgba(124,124,124,1);
+  }
+}
+.bottom-btn {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 109rpx;
+  .item {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28rpx;
+    color: #fff;
+  }
+  .car {
+    background-color: #1F2034;
+  }
+  .buy {
+    background-color: #6A6E94;
   }
 }
 </style>

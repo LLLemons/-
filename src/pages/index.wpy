@@ -73,16 +73,11 @@ export default class Index extends wepy.page {
     this.recommendList = data;
     this.$apply();
   }
-  /**
-   * 上啦加载更多
-   */
-  lower() {}
   onLoad() {
     const { page } = this.local;
     this.getBannerList();
     this.getSortList();
     this.getGoodListRec(page);
-    this.lower();
   }
 }
 </script>

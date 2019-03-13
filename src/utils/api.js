@@ -1,4 +1,4 @@
-import { httpGet } from './utils'
+import { httpGet, httpPost } from './utils'
 const service = {
   /**
    * 获取轮播数据
@@ -29,6 +29,24 @@ const service = {
    */
   async getGoodDetail(id) {
     return httpGet(`good/${id}`)
+  },
+  /**
+   * 加入购物车
+   */
+  async addCartApi(id, size) {
+    return httpPost('shopcart', { id, size })
+  },
+  /**
+   * 登陆
+   */
+  async signInApi(phone, password) {
+    return httpPost('login', { phone, password })
+  },
+  /**
+   * 注册
+   */
+  async signUpApi(phone, password) {
+    return httpPost('register', { phone, password })
   }
 }
 export default service
